@@ -1,30 +1,20 @@
 const express = require('express');
 const app = express();
 const mongoose = require('mongoose');
-const httpStatusText = require('./utility/httpStatusText');
-const url="mongodb+srv://catalyst:2mca9bcy@catalyst.mcmdbos.mongodb.net/catalyst?retryWrites=true&w=majority&appName=catalyst"
+const url = "mongodb://kamalemad2002:2mca9bcy@ac-kvhzegf-shard-00-00.hfwgqzr.mongodb.net:27017,ac-kvhzegf-shard-00-01.hfwgqzr.mongodb.net:27017,ac-kvhzegf-shard-00-02.hfwgqzr.mongodb.net:27017/?ssl=true&replicaSet=atlas-mi92hk-shard-0&authSource=admin&retryWrites=true&w=majority&appName=learn"
 mongoose.connect(url).then(() => {
-    console.log('let is starting... ')
+    console.log('MONGO is here!')
 })
-
 app.use(express.json());
-
-// const coursesRouter = require('./routes/courses.route');
-const usersRouter = require('./router/user-router');
-
-
-// app.use('/api/courses', coursesRouter) // /api/courses
-
-app.use('/api/users', usersRouter) // /api/users
-
-// global middleware for not found router
-app.all('*', (req, res, next)=> {
-    return res.status(404).json({ status: httpStatusText.ERROR, message: 'this resource is not available'})
+const projectRouter = require('./router/project-router.js');
+const usersRouter = require('./router/auth-router.js');
+app.use('/api/projects', projectRouter);
+app.use('/api/users', usersRouter);
+app.all('*', (req, res, next) => {
+    return res.status(404).json({ status: "errorr", message: 'this resource is not available' })
 })
-
-// global error handler
 app.use((error, req, res, next) => {
-    res.status(error.statusCode || 500).json({status: error.statusText || httpStatusText.ERROR, message: error.message, code: error.statusCode || 500, data: null});
+    res.status(error.statusCode || 500).json({ status: error.statusText || "error", message: error.message, code: error.statusCode || 500, data: null });
 })
 
 
@@ -32,6 +22,6 @@ app.use((error, req, res, next) => {
 
 
 
-app.listen( 5900, () => {
-    console.log('listening on port: 5900');
+app.listen(5000, () => {
+    console.log('listening on port: 5000');
 });
