@@ -1,5 +1,5 @@
 const mongoose = require('mongoose');
-
+var Schema = mongoose.Schema;
 const projectSchema = new mongoose.Schema({
     info: {
         type: String,
@@ -13,9 +13,19 @@ const projectSchema = new mongoose.Schema({
         type: String,
         required: true
     },
-    Investors  :{
-        type :[String] ,required:true
-    }
+    publishingTime: {
+        type: Date,
+      default:Date.now
+    },
+    user: { 
+        type: Schema.ObjectId,
+        ref: "User",
+        // required: true
+    },
+    // user:{
+    //     type:mongoose.Schema.Types.ObjectId,
+    //     ref:`User`
+    // }
 })
 
 module.exports = mongoose.model('Project', projectSchema);

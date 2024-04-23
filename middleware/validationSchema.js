@@ -4,18 +4,18 @@ const validationSchema = () => {
     return [
         body('info')
             .notEmpty()
-            .withMessage("information is required")
-            .isLength({min: 2})
-            .withMessage("title at least is 2 digits"),
+            .withMessage("information is required"),
         body('budget')
             .notEmpty()
             .withMessage("budget is required")    ,
         body('size')
             .notEmpty()
-            .withMessage("size is required")
+            .withMessage("size is required"),
+            // body('user')
+            // .notEmpty()
+            // .withMessage("user is required")
     ]
 }
-
 module.exports = {
     validationSchema
 }

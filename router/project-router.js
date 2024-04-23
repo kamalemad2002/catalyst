@@ -1,4 +1,5 @@
 const express = require('express');
+const currentUser=require('../middleware/currnetRole')
 const router = express.Router();
 const projectController = require('../controller/project-controller');
 const { validationSchema } = require('../middleware/validationSchema');
@@ -9,5 +10,5 @@ router.route('/')
 router.route('/:id')
             .get(projectController.getProject)
             .patch(projectController.updateProject)
-            .delete(projectController.deleteProject)
+            .delete( currentUser.userRoleCheck(["investor"]),projectController.deleteProject)
 module.exports = router;

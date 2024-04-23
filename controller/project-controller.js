@@ -1,9 +1,7 @@
-
 const {validationResult} = require('express-validator');
 const Project = require('../model/project');
 const appError = require('../utility/appError');
-
-
+const project = require('../model/project');
 const getAllProjects = async (req,res,next) => {
   try{
     const projects=await Project.find();
@@ -13,33 +11,28 @@ const getAllProjects = async (req,res,next) => {
     return res.status(404).json("error:",err)
   }
 };
-
 const getProject = async (req, res, next) => {
         const project = await Project.findById(req.params.id);
         if(!project) {
             const error = appError.create('project not found', 404, "FAIL :mafesh project ya sahby")
             return next(error);
         }
-        return res.json({ status: "SUCCESSFULLY GETTING", data: {project}});
+        return res.json({ status: "SUCCESSFULLY GETTING", data: {project}, users:Project.user});
 };
-
 const addProject = async (req, res, next) => {
-    // res.json(req.body);
-    const project = await Project.findById(req.params.id);
-    if(!project) {
-        const error = appError.create('project not found', 404, "FAIL :mafesh project ya sahby")
-        return next(error);
+
+  const errors = validationResult(req);
+      if(!errors.isEmpty()) {
+      const error = appError.create(errors.array(), 400, "FAIL")
+      return next(error);
     }
-    const errors = validationResult(req);
-    if(!errors.isEmpty()) {
-        const error = appError.create(errors.array(), 400, "FAILED!")
-        return next(error);
-    }
-    const newProject = new Project(req.body);
-    await newProject.save();
-    res.status(201).json({status: "SUCCESSFULLY ADDED", data: {project: newProject}})
+  const newProject = new Project(req.body);
+
+  await newProject.save();
+
+  res.status(201).json({status: "SUCCESS", data: {project: newProject}})
 }
-const updateProject = async (req, res,next) => {
+const updateProject = async (req, res) => {
   try{
     // const project = await Project.findById(req.params.id);
     // if(!project) {
@@ -49,7 +42,6 @@ const updateProject = async (req, res,next) => {
     const _id = req.params.id;  
     const updatedproject = await Project.updateOne({_id: _id}, {$set: {...req.body}});
     return res.status(200).json({status: "SUCCESSFULLY UPDATED", data: {project: updatedproject}})
-
   }
   catch(err){
     const error = appError.create('project not found', 404, "FAIL :mafesh project ya sahby")
